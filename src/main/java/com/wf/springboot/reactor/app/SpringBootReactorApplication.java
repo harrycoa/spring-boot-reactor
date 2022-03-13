@@ -3,6 +3,7 @@ package com.wf.springboot.reactor.app;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import reactor.core.publisher.Flux;
 
 @SpringBootApplication
 public class SpringBootReactorApplication  implements CommandLineRunner {
@@ -13,6 +14,11 @@ public class SpringBootReactorApplication  implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//Flux nombres =
+		Flux<String> nombres = Flux.just("Andres", "Pedro", "Harry", "Yandira") // flux es un publisher (Observable)
+				//.doOnNext( element -> System.out.println(element) );
+				.doOnNext( System.out::println );
+
+		nombres.subscribe();
+
 	}
 }
