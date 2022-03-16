@@ -1,5 +1,6 @@
 package com.wf.springboot.reactor.app;
 
+import com.wf.springboot.reactor.app.models.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -18,18 +19,25 @@ public class SpringBootReactorApplication  implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Flux<String> nombres = Flux.just("Andres", "Pedro", "mm","Harry", "Yandira") // flux es un publisher (Observable)
+		Flux<Usuario> nombres = Flux.just("Andres", "Pedro", "mm","Harry", "Yandira") // flux es un publisher (Observable)
 				//.doOnNext( element -> System.out.println(element) );
-				.doOnNext( e -> {
-					if (e.isEmpty()) {
+				// utilizando el map para convertirlo de string a Objeto usuario
+				.map( nombre -> new Usuario(nombre, null))
+				.doOnNext( usuario -> {
+					if (usuario == null) {
 						throw new RuntimeException("Vacios");
 					} else {
-						System.out.println(e);
+						System.out.println(usuario.getNombre());
 					}
-				} );
+				})
+				.map(usuario -> {
+					String nombre = usuario.getNombre().toUpperCase();
+					usuario.setNombre(nombre);
+					return usuario;
+				});
 
 		// nombres.subscribe(log::info);
-		nombres.subscribe(e -> log.info(e),
+		nombres.subscribe(e -> log.info(e.toString()),
 				error -> log.error(error.getMessage()),
 				new Runnable() {
 					@Override
