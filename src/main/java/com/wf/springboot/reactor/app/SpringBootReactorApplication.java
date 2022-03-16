@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import reactor.core.publisher.Flux;
 
+import java.util.Locale;
+
 @SpringBootApplication
 public class SpringBootReactorApplication  implements CommandLineRunner {
 
@@ -19,15 +21,16 @@ public class SpringBootReactorApplication  implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Flux<Usuario> nombres = Flux.just("Andres", "Pedro", "mm","Harry", "Yandira") // flux es un publisher (Observable)
-				//.doOnNext( element -> System.out.println(element) );
+		Flux<Usuario> nombres = Flux.just("Andres wiese", "Pedro aquino", "Manuel medran","Harry coa", "Yandira cia", "Bruce Lee", "Bruce Willis") // flux es un publisher (Observable)
+				//  .doOnNext( element -> System.out.println(element) );
 				// utilizando el map para convertirlo de string a Objeto usuario
-				.map( nombre -> new Usuario(nombre, null))
+				.map( nombre -> new Usuario(nombre.split(" ")[0].toUpperCase(), nombre.split(" ")[1].toUpperCase()))
+				.filter( usuario ->  usuario.getNombre().toLowerCase().equals("bruce")  )
 				.doOnNext( usuario -> {
 					if (usuario == null) {
 						throw new RuntimeException("Vacios");
 					} else {
-						System.out.println(usuario.getNombre());
+						System.out.println(usuario.getNombre().concat("-").concat(usuario.getApellido()));
 					}
 				})
 				.map(usuario -> {
